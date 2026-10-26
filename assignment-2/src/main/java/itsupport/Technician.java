@@ -16,6 +16,59 @@ Your equals and hashCode implementations must be consistent with each other.*/
 
 package itsupport;
 
+import java.util.Objects;
+
 public class Technician {
+    private final String NAME;
+    private int servicePoints;
+
+    public Technician(String name) {
+        if(name==null || name.isEmpty()){
+            throw new IllegalArgumentException("Name cannot be null or empty");
+        }
+        this.NAME = name;
+        this.servicePoints = 0;
+    }
+
+    public String getNAME() {
+        return NAME;
+    }
+
+    public int getServicePoints() {
+        return this.servicePoints;
+    }
+
+    public void addPoints(int points) {
+        if(this.servicePoints + points > 0){
+            this.servicePoints += points;
+        }else{
+            this.servicePoints = 0;
+            System.out.println("Added points cannot lead to a total less than zero, service points have been set to 0.");
+        }
+    }
+
+    @Override
+    public String toString() {
+        return "Technician [name=" + NAME + ", points=" + servicePoints + "]";
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(this.NAME);
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if(obj.getClass() == Technician.class){
+            Technician other = (Technician) obj;
+            return this.NAME.equals(other.NAME);
+        }
+        return false;
+    }
+
+
+
+
+
 
 }

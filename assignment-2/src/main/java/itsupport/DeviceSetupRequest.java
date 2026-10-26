@@ -7,17 +7,22 @@ Resolution rule:
 
 package itsupport;
 
-public class DeviceSetupRequest {
-    public synchronized int resolveFor(Technician technician) {
-        if (resolved) {
-            return 0;
-        }
+public class DeviceSetupRequest extends AbstractSupportRequest {
+    int deviceCount;
 
-        // ...
+    public DeviceSetupRequest(int deviceCount, String title, int id) {
+        super(id, title, deviceCount);
+
+        if(deviceCount < 0){
+            throw new IllegalArgumentException("Device count must be a positive integer");
+        }
+        this.deviceCount = deviceCount;
+        this.awardedPoints = this.getBasePoints()*deviceCount;
     }
 
     @Override
     public String toString() {
+        return "DeviceSetupRequest [device count=" + deviceCount + "] " + super.toString();
 
     }
 }

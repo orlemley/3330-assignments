@@ -97,7 +97,7 @@ public class HelpDesk {
         SupportRequest request = requestsById.get(requestId);
 
         if (requestsbyTechnician == null || !(requestsbyTechnician.contains(request))) {
-            throw new IllegalArgumentException("Support request '" + requestId + "' does not belong to technician '" + technician.getName());
+            throw new IllegalArgumentException("Support request '" + requestId + "' does not belong to technician '" + technician.getNAME());
         }
 
         int pointsAwarded = request.resolveFor(technician);
@@ -119,7 +119,7 @@ public class HelpDesk {
             throw new IllegalArgumentException("Technician cannot be null");
         }
 
-        System.out.println("Technician " + technician.getName() + "'s Assignments");
+        System.out.println("Technician " + technician.getNAME() + "'s Assignments");
 
         List<SupportRequest> assignmentsForTechnician = assignments.get(technician);
 

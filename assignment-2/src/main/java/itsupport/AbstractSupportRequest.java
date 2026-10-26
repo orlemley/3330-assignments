@@ -22,10 +22,12 @@ package itsupport;
 public abstract class AbstractSupportRequest implements SupportRequest {
     private final int id;
     private String title;
-    private int basePoints;
-    private boolean resolved;
+    private int basePoints = 1;
+    private final int multiplier;
+    protected int awardedPoints;
+    protected boolean resolved;
 
-    public AbstractSupportRequest(int id, String title, int basePoints) {
+    public AbstractSupportRequest(int id, String title, int multiplier) {
         if (id <= 0) {
             throw new IllegalArgumentException("Support request id must be greater than 0");
         }
@@ -34,13 +36,13 @@ public abstract class AbstractSupportRequest implements SupportRequest {
             throw new IllegalArgumentException("Support request title cannot be null or blank");
         }
 
-        if (basePoints <= 0) {
-            throw new IllegalArgumentException("Base points must be greater than 0");
+        if (multiplier <= 0) {
+            throw new IllegalArgumentException("Support request multiplier must be an int greater than 0");
         }
 
         this.id = id;
         this.title = title;
-        this.basePoints = basePoints;
+        this.multiplier = multiplier;
         this.resolved = false;
     }
 
@@ -116,18 +118,23 @@ public abstract class AbstractSupportRequest implements SupportRequest {
         return true;
     }
 
-    protected synchronized void resolve() {
+    protected synchronized int resolve() {
         if (resolved) {
             throw new IllegalStateException("Cannot resolve support request '" + getId() + "' because it has already been resolved");
         }
+        this.resolved = true;
+        return this.awardedPoints;
+    }
 
-        resolved = true;
+    public synchronized int resolveFor(Technician technician) {
+        this.resolve();
+        technician.addPoints(this.awardedPoints);
+        return this.awardedPoints;
     }
 
     // Default toString()
     @Override
     public String toString() {
-        return "(Type) Unknown/Abstract | (ID) " + getId() + " | (Title) " + getTitle()
-                + " | (Base Points) " + getBasePoints() + " | (Resolved?) " + (isResolved() ? "Yes" : "No");
+        return "BaseRequest [id=" + this.id + " title=" + this.title + ", basePoints=" + this.basePoints + ", multiplier=" + this.multiplier + "resolved=" + this.resolved + "]";
     }
 }
