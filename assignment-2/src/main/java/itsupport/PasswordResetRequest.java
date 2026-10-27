@@ -9,17 +9,19 @@ package itsupport;
 
 public class PasswordResetRequest extends AbstractSupportRequest {
 
-    String accountName;
-    public PasswordResetRequest(String title, String name, int id) {
-        super(id, title, 1);
-        if (name == null || name.isEmpty()) {
+    private final String accountName;
+    public PasswordResetRequest(int id, String title, int basePoints, String name) {
+        super(id, title, basePoints);
+        if (name == null || name.isBlank()) {
             throw new IllegalArgumentException("Name cannot be null or empty");
         }
         this.accountName = name;
-        this.awardedPoints = this.getBasePoints();
-
     }
 
+    @Override
+    protected int calculatePoints() {
+        return getBasePoints();
+    }
 
     @Override
     public String toString() {
