@@ -19,19 +19,19 @@ package itsupport;
 import java.util.Objects;
 
 public class Technician {
-    private final String NAME;
+    private final String name;
     private int servicePoints;
 
     public Technician(String name) {
-        if(name==null || name.isEmpty()){
+        if(name==null || name.isBlank()){
             throw new IllegalArgumentException("Name cannot be null or empty");
         }
-        this.NAME = name;
+        this.name = name;
         this.servicePoints = 0;
     }
 
-    public String getNAME() {
-        return NAME;
+    public String getName() {
+        return name;
     }
 
     public int getServicePoints() {
@@ -39,29 +39,28 @@ public class Technician {
     }
 
     public void addPoints(int points) {
-        if(this.servicePoints + points > 0){
-            this.servicePoints += points;
-        }else{
-            this.servicePoints = 0;
-            System.out.println("Added points cannot lead to a total less than zero, service points have been set to 0.");
+        if (points < 0 && servicePoints + points < 0) {
+            throw new IllegalStateException("Cannot subtract " + -points + " points from technician '" + name + "' because the technician only has " + servicePoints + " points, and a technician's points cannot go below 0");
         }
+
+        servicePoints += points;
     }
 
     @Override
     public String toString() {
-        return "Technician [name=" + NAME + ", points=" + servicePoints + "]";
+        return "Technician [name=" + name + ", points=" + servicePoints + "]";
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(this.NAME);
+        return Objects.hash(this.name);
     }
 
     @Override
     public boolean equals(Object obj) {
-        if(obj.getClass() == Technician.class){
+        if(obj instanceof Technician){
             Technician other = (Technician) obj;
-            return this.NAME.equals(other.NAME);
+            return this.name.equals(other.name);
         }
         return false;
     }

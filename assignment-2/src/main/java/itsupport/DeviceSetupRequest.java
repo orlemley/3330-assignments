@@ -8,16 +8,20 @@ Resolution rule:
 package itsupport;
 
 public class DeviceSetupRequest extends AbstractSupportRequest {
-    int deviceCount;
+    private final int deviceCount;
 
-    public DeviceSetupRequest(int deviceCount, String title, int id) {
-        super(id, title, deviceCount);
+    public DeviceSetupRequest(int id, String title, int basePoints, int deviceCount) {
+        super(id, title, basePoints);
 
-        if(deviceCount < 0){
+        if(deviceCount <= 0){
             throw new IllegalArgumentException("Device count must be a positive integer");
         }
         this.deviceCount = deviceCount;
-        this.awardedPoints = this.getBasePoints()*deviceCount;
+    }
+
+    @Override
+    protected int calculatePoints() {
+        return getBasePoints() * deviceCount;
     }
 
     @Override

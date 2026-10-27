@@ -22,12 +22,10 @@ package itsupport;
 public abstract class AbstractSupportRequest implements SupportRequest {
     private final int id;
     private String title;
-    private int basePoints = 1;
-    private final int multiplier;
-    protected int awardedPoints;
-    protected boolean resolved;
+    private int basePoints;
+    private boolean resolved;
 
-    public AbstractSupportRequest(int id, String title, int multiplier) {
+    public AbstractSupportRequest(int id, String title, int basePoints) {
         if (id <= 0) {
             throw new IllegalArgumentException("Support request id must be greater than 0");
         }
@@ -36,15 +34,35 @@ public abstract class AbstractSupportRequest implements SupportRequest {
             throw new IllegalArgumentException("Support request title cannot be null or blank");
         }
 
-        if (multiplier <= 0) {
-            throw new IllegalArgumentException("Support request multiplier must be an int greater than 0");
+        if (basePoints <= 0) {
+            throw new IllegalArgumentException("Base points must be greater than 0");
         }
 
         this.id = id;
         this.title = title;
-        this.multiplier = multiplier;
+        this.basePoints = basePoints;
         this.resolved = false;
     }
+
+    @Override
+    public int resolveFor(Technician technician) {
+        if (isResolved()) {
+            throw new IllegalStateException("Cannot resolve support request '" + id + "' because it has already been resolved");
+        }
+
+        if (technician == null) {
+            throw new IllegalArgumentException("Technician cannot be null");
+        }
+
+        int pointsToAward = calculatePoints();
+
+        technician.addPoints(pointsToAward);
+        resolved = true;
+
+        return pointsToAward;
+    }
+
+    protected abstract int calculatePoints();
 
     @Override
     public int getId() {
@@ -118,23 +136,10 @@ public abstract class AbstractSupportRequest implements SupportRequest {
         return true;
     }
 
-    protected synchronized int resolve() {
-        if (resolved) {
-            throw new IllegalStateException("Cannot resolve support request '" + getId() + "' because it has already been resolved");
-        }
-        this.resolved = true;
-        return this.awardedPoints;
-    }
-
-    public synchronized int resolveFor(Technician technician) {
-        this.resolve();
-        technician.addPoints(this.awardedPoints);
-        return this.awardedPoints;
-    }
-
     // Default toString()
     @Override
     public String toString() {
-        return "BaseRequest [id=" + this.id + " title=" + this.title + ", basePoints=" + this.basePoints + ", multiplier=" + this.multiplier + "resolved=" + this.resolved + "]";
+        return "(Type) Unknown/Abstract | (ID) " + getId() + " | (Title) " + getTitle()
+                + " | (Base Points) " + getBasePoints() + " | (Resolved?) " + (isResolved() ? "Yes" : "No");
     }
 }

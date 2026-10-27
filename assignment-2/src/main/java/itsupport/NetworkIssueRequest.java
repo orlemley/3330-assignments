@@ -8,16 +8,19 @@
 package itsupport;
 
 public class NetworkIssueRequest extends AbstractSupportRequest {
-    public int affectedUsers;
-    public NetworkIssueRequest(int affectedUsers, String title, int id) {
-        super(id, title, affectedUsers);
+    private final int affectedUsers;
+    public NetworkIssueRequest(int id, String title, int basePoints, int affectedUsers) {
+        super(id, title, basePoints);
         if (affectedUsers <= 0) {
             throw new IllegalArgumentException("Affected users must be a positive integer");
         }
         this.affectedUsers = affectedUsers;
+    }
 
+    @Override
+    protected int calculatePoints() {
         //Linear rule
-        this.awardedPoints = this.getBasePoints() + affectedUsers;
+        return getBasePoints() + affectedUsers;
     }
 
     @Override
