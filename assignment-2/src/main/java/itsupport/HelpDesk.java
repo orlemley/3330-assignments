@@ -89,26 +89,22 @@ public class HelpDesk {
     }
 
     public int resolveRequest(Technician technician, int requestId) {
-
-        try {
-            if (technician == null) {
-                throw new IllegalArgumentException("Technician cannot be null");
-            }
-
-            List<SupportRequest> requestsByTechnician = assignments.get(technician);
-            SupportRequest request = requestsById.get(requestId);
-
-            if (requestsByTechnician == null || !(requestsByTechnician.contains(request))) {
-                throw new IllegalArgumentException("Support request '" + requestId + "' does not belong to technician '" + technician.getName() + "'");
-            }
-            // Should we remove it from the technician's assignments?
-            return request.resolveFor(technician);
-        } catch (Exception e){
-            System.out.println(e.getMessage());
-            return 0;
+        if (technician == null) {
+            throw new IllegalArgumentException("Technician cannot be null");
         }
 
+        List<SupportRequest> requestsByTechnician = assignments.get(technician);
+        SupportRequest request = requestsById.get(requestId);
 
+        if (requestsByTechnician == null || !(requestsByTechnician.contains(request))) {
+            throw new IllegalArgumentException("Support request '" + requestId + "' does not belong to technician '" + technician.getName());
+        }
+
+        int pointsAwarded = request.resolveFor(technician);
+        // Should we remove it from the technician's assignments? I decided not to remove it
+        // Basically assignments represents anything they have ever been assigned,
+        // even if it has since been resolved against them or if another technician had it resolved against them
+        return pointsAwarded;
     }
 
     public void printAllRequests() {

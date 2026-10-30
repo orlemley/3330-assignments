@@ -26,8 +26,6 @@ public class DeviceSetupRequest extends AbstractSupportRequest {
 
     @Override
     public String toString() {
-        return "(Type) DeviceSetup | (ID) " + getId() + " | (Title) " + getTitle()
-                + " | (Base Points) " + getBasePoints() + " | (Resolved?) " + (isResolved() ? "Yes" : "No")
-                + " | (Device Count) " + deviceCount;
+        return super.toString() + " | (Device Count) " + deviceCount;
     }
 }

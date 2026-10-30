@@ -142,13 +142,24 @@ public class Main {
         help.resolveRequest(copy1, 5);
         help.resolveRequest(unique, 4);
         System.out.println("Error for resolving already resolved issue from another technician:\n--------------------------------------------------------");
-        help.resolveRequest(unique, 5); //Should throw error
+        try {
+            help.resolveRequest(copy1, 5); //Should throw error. Should specifically throw illegal state repeated resolve
+        } catch (Exception exception) {
+            System.out.println(exception.getClass().getName() + " : " + exception.getMessage());
+        }
+
         System.out.println("--------------------------------------------------------");
         //Printing section
         System.out.println("Printing all requests:");
         help.printAllRequests();
 
-        System.out.println("\n\nPrinting device setup requests:");
+        //Translating HashSet to ArrayList for sumPoints and printAll methods to work
+        ArrayList<Technician> techList = new ArrayList<>(techSet);
+
+        System.out.println("Printing all technicians:");
+        HelpDeskUtil.printAll(techList);
+
+        System.out.println("\n\nPrinting setup requests:");
         help.printAssignmentsFor(unique);
         help.printAssignmentsFor(copy1);
 
@@ -158,8 +169,6 @@ public class Main {
         }
 
         System.out.println("\n\nTotal points in system:");
-        //Translating HashSet to ArrayList for sumPoints method to work
-        ArrayList<Technician> techList = new ArrayList<>(techSet);
         int totalPoints = HelpDeskUtil.sumPoints(techList);
         System.out.println(totalPoints);
 

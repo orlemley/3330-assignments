@@ -39,6 +39,8 @@ public class Technician {
     }
 
     public void addPoints(int points) {
+        // You could argue that this should check against the invariant itself but that should really be detected in the method that is potentially making servicePoints negative rather than being caught after the fact here. Maybe it would still be a nice adddition here though
+        // Our current code still prevents servicePoints from ever going below 0 since there is no mechanism to subtract points without the invariant being checked
         if (points < 0 && servicePoints + points < 0) {
             throw new IllegalStateException("Cannot subtract " + -points + " points from technician '" + name + "' because the technician only has " + servicePoints + " points, and a technician's points cannot go below 0");
         }

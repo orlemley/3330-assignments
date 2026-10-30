@@ -25,8 +25,6 @@ public class PasswordResetRequest extends AbstractSupportRequest {
 
     @Override
     public String toString() {
-        return "(Type) PasswordReset | (ID) " + getId() + " | (Title) " + getTitle()
-                + " | (Base Points) " + getBasePoints() + " | (Resolved?) " + (isResolved() ? "Yes" : "No")
-                + " | (Account Name) " + accountName;
+        return super.toString() + " | (Account Name) " + accountName;
     }
 }

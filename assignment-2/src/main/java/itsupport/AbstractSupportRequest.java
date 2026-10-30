@@ -46,7 +46,10 @@ public abstract class AbstractSupportRequest implements SupportRequest {
 
     @Override
     public int resolveFor(Technician technician) {
-
+        // We throw by default for repeat resolutions at the abstract class level
+        if (isResolved()) {
+            throw new IllegalStateException("Cannot resolve support request '" + id + "' because it has already been resolved");
+        }
 
         if (technician == null) {
             throw new IllegalArgumentException("Technician cannot be null");
@@ -137,7 +140,7 @@ public abstract class AbstractSupportRequest implements SupportRequest {
     // Default toString()
     @Override
     public String toString() {
-        return "(Type) Unknown/Abstract | (ID) " + getId() + " | (Title) " + getTitle()
+        return "(Type) " + this.getClass().getSimpleName() + " | (ID) " + getId() + " | (Title) " + getTitle()
                 + " | (Base Points) " + getBasePoints() + " | (Resolved?) " + (isResolved() ? "Yes" : "No");
     }
 }
