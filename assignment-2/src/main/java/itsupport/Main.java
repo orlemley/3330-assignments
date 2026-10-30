@@ -1,3 +1,7 @@
+package itsupport;
+import java.util.ArrayList;
+import java.util.HashSet;
+
 /**Main Demo Requirements
  Your Main must be a hardcoded demonstration that shows the system working.
  Minimum demo:
@@ -88,3 +92,79 @@
  • Are invalid operations rejected clearly rather than silently ignored?
  • Did every group member contribute meaningful commits?
  • Can your exported project be imported and run successfully on another computer?*/
+
+public class Main {
+    public static void main(String[] args) {
+
+        //HelpDesk creation
+        HelpDesk help = new HelpDesk();
+
+        //Tech creation and adding to ArrayList
+        Technician unique = new Technician("Jacob");
+        Technician copy1 = new Technician("Randy");
+        Technician copy2 = new Technician("Randy");
+
+        HashSet<Technician> techSet = new HashSet<Technician>();
+        techSet.add(unique);
+        techSet.add(copy1);
+        techSet.add(copy2);
+
+        //DeviceSetUpRequest objects
+        DeviceSetupRequest device1 = new DeviceSetupRequest(1, "Classroom setup", 5,24 );
+        DeviceSetupRequest device2 = new DeviceSetupRequest(2, "Office setup", 10,6 );
+
+        //NetworkIssueRequest objects
+        NetworkIssueRequest network1 = new NetworkIssueRequest(3, "wifi no internet", 2, 52);
+        NetworkIssueRequest network2 = new NetworkIssueRequest(4, "Database not connecting to API", 15, 2);
+
+        //PasswordResetRequest objects
+        PasswordResetRequest password1 = new PasswordResetRequest(5, "Forgot Password", 5, "JohnSmith1");
+        PasswordResetRequest password2 = new PasswordResetRequest(6, "Forgot Password", 5, "JakeSully1948");
+
+        //Adding request to HelpDesk object
+        help.addRequest(device1);
+        help.addRequest(device2);
+        help.addRequest(network1);
+        help.addRequest(network2);
+        help.addRequest(password1);
+        help.addRequest(password2);
+
+        //Assigning requests to technicians
+        help.assignRequest(unique, 1);
+        help.assignRequest(copy1, 2);
+        help.assignRequest(copy1, 3);
+        help.assignRequest(unique, 4);
+        help.assignRequest(copy1, 5);
+        help.assignRequest(unique, 6);
+
+        //Resolve requests
+        help.resolveRequest(copy1, 2);
+        help.resolveRequest(copy1, 5);
+        help.resolveRequest(unique, 4);
+        System.out.println("Error for resolving already resolved issue from another technician:\n--------------------------------------------------------");
+        help.resolveRequest(unique, 5); //Should throw error
+        System.out.println("--------------------------------------------------------");
+        //Printing section
+        System.out.println("Printing all requests:");
+        help.printAllRequests();
+
+        System.out.println("\n\nPrinting device setup requests:");
+        help.printAssignmentsFor(unique);
+        help.printAssignmentsFor(copy1);
+
+        System.out.println("\n\nPrinting individual points:");
+        for(Technician tech : techSet){
+            System.out.println(tech);
+        }
+
+        System.out.println("\n\nTotal points in system:");
+        //Translating HashSet to ArrayList for sumPoints method to work
+        ArrayList<Technician> techList = new ArrayList<>(techSet);
+        int totalPoints = HelpDeskUtil.sumPoints(techList);
+        System.out.println(totalPoints);
+
+
+
+
+    }
+}

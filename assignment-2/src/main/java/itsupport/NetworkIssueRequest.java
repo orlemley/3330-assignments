@@ -25,6 +25,8 @@ public class NetworkIssueRequest extends AbstractSupportRequest {
 
     @Override
     public String toString() {
-        return "NetworkIssueRequest [affected users=" + this.affectedUsers + "]" + super.toString();
+        return "(Type) NetworkIssue | (ID) " + getId() + " | (Title) " + getTitle()
+                + " | (Base Points) " + getBasePoints() + " | (Resolved?) " + (isResolved() ? "Yes" : "No")
+                + " | (Affected Users) " + affectedUsers;
     }
 }
