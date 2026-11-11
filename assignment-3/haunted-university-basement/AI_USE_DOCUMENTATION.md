@@ -151,3 +151,31 @@ A small shared assertion helper checks both InteractionResult fields. Parameteri
 ### Validation
 
 Ran `mvn -B test` after the final additions: BUILD SUCCESS. All 29 InteractionEngineTest cases passed; all 85 project tests passed with zero failures, errors, or skips. The existing compiler and Mockito agent warnings remained. No coverage instrumentation was run, so no measured coverage percentage is claimed.
+
+## November 11, 2026 - MovementEngineTest
+
+### Exact student prompt
+
+```text
+Next can we do MovementEngineTest? Make tests for the two invariants at the start. Then verify that the trap is gotten correctly and that the current room is set correctly. Use traps that are 1. not null and also armed, 2. null but also armed, 3. not armed and not null, and 4. null and not armed for that if branch. The trap resolver should be mocked and stubbed to return a correct trapResult. verify that inside and outside that if branch, the returned objects' fields are correct.
+```
+
+### Request summary and clarification
+
+Test both movement guard clauses, destination and trap selection, all trap-condition outcomes, and every MoveResult field using a mocked TrapResolver. A null trap has no armed state: the null/armed and null/not-armed combinations both reduce to the same null-trap case because Java short-circuits `trap != null && trap.isArmed()`. The tests therefore cover the three realizable cases: non-null armed, null, and non-null disarmed.
+
+### Assistant response and work performed
+
+Added src/test/java/com/example/haunted/engine/MovementEngineTest.java with five tests using real players, rooms, and traps and a Mockito TrapResolver mock. Production code and README were unchanged.
+
+- Missing exit: checks the exact failure result, unchanged current room and health, and no resolver calls. A different valid exit exists to catch use of the wrong direction.
+- Locked destination: uses a real connected locked room with an armed trap. Checks the exact failure result, unchanged player location and health, retained lock/armed state, and no resolver calls. This isolates the locked-room guard from the missing-exit guard.
+- Armed destination trap: stubs the resolver for the exact player and destination trap to return a successful InteractionResult with the expected trigger message. Checks all MoveResult fields, including the appended resolver message and destination trap damage, destination room identity, and exactly one resolver call with the correct objects.
+- Null destination trap: checks successful movement, exact result fields with no trigger or damage, and no resolver calls. The starting room has a different armed trap to detect accidental resolution of the starting room's trap.
+- Disarmed destination trap: checks successful movement, exact result fields, destination room and trap identity, retained disarmed state, unchanged health, and no resolver calls.
+
+A shared assertion helper checks all four MoveResult fields. The mocked resolver deliberately has no damage or disarming side effects; those rules belong to TrapResolver tests rather than MovementEngine tests.
+
+### Validation
+
+Ran `mvn -B test`: BUILD SUCCESS. All 5 MovementEngineTest tests passed, and all 90 project tests passed with zero failures, errors, or skips. Existing Java compiler and Mockito agent warnings remained. No measured coverage percentage is claimed.
