@@ -179,3 +179,31 @@ A shared assertion helper checks all four MoveResult fields. The mocked resolver
 ### Validation
 
 Ran `mvn -B test`: BUILD SUCCESS. All 5 MovementEngineTest tests passed, and all 90 project tests passed with zero failures, errors, or skips. Existing Java compiler and Mockito agent warnings remained. No measured coverage percentage is claimed.
+
+## November 11, 2026 - GameEngineTest
+
+### Exact student prompt
+
+```text
+For GameEngine, can you for most of them either mock the lower level class and verify that it gets called correctly, or just verify the return result if its like a getter. For isGameWon(), test multiple possible combinations. for attack(), use real objects and verify that the entire sequence works, including the optional empty case. But mock combatEngine and just verify that call actually. Use real objects for the first line though
+```
+
+### Request summary
+
+Test GameEngine delegation using mocked lower-level engines, verify getters, exercise combinations for winning, and use real player/room/monster lookup before delegating attack to a mocked CombatEngine.
+
+### Assistant response and work performed
+
+Added src/test/java/com/example/haunted/engine/GameEngineTest.java with real Player, Inventory, Quest, Room, and Monster objects. MovementEngine, InteractionEngine, and CombatEngine are Mockito mocks. Production code and README were unchanged.
+
+- Delegation tests cover move, pickUpItem, equipItem, useItem, and unlockRoom with both successful and unsuccessful result objects. Each verifies the exact collaborator method and arguments, including the quest for pickup, and asserts that GameEngine returns the identical result object.
+- Attack performs the real current-room lookup with multiple real monsters and a mixed-case search name. The player changes rooms before attacking, and both rooms contain a monster with the requested name, so the test detects lookup in the wrong room. Only CombatEngine is mocked for the attack; its call must receive the exact player, quest, and matching current-room monster, and its exact result must be returned.
+- Two optional-empty cases cover an empty room and a room containing only a differently named monster. Both verify delegation with null and return of the exact mocked combat result.
+- Getter tests verify player and quest object identity and that getCurrentRoom follows changes to the real player's current room.
+- isGameOver cases cover full health, one remaining health, and zero health.
+- Eight parameterized isGameWon cases cover every combination of gradebook recovery, phantom defeat, and player alive/dead state. This includes incomplete, partially complete, and fully complete quests; only both goals complete with a living player wins.
+- AfterEach verifies there are no unverified calls to any mocked lower-level engine, including during getter and state-query tests.
+
+### Validation
+
+Ran `mvn -B test`: BUILD SUCCESS. All 27 GameEngineTest cases passed; all 117 project tests passed with zero failures, errors, or skips. Existing compiler and Mockito agent warnings remained. No measured coverage percentage is claimed.
