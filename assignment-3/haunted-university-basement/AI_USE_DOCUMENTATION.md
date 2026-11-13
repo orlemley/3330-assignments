@@ -207,3 +207,66 @@ Added src/test/java/com/example/haunted/engine/GameEngineTest.java with real Pla
 ### Validation
 
 Ran `mvn -B test`: BUILD SUCCESS. All 27 GameEngineTest cases passed; all 117 project tests passed with zero failures, errors, or skips. Existing compiler and Mockito agent warnings remained. No measured coverage percentage is claimed.
+
+# Zachs addition
+# AI Use Documentation
+
+This is the append-only record of AI assistance for this assignment. Entries are organized by class or task. Each entry records the student's exact prompt before the assistant's explanation and work results. Future updates will be appended here instead of to README.md.
+
+---
+
+## November 11, 2026 - DungeonFactoryTest
+
+### Exact student prompt
+
+```text
+We need to write tests that give us full test coverage for this already made game for my class. The assignment allows AI. I'll give you specific requirements, and per class, you should maintain a markdown file and don't delete anything in the markdown file as you go. Basically document your response and what you did in the readme so that the teacher can see what you did. Across all of the code, make it very clean and concise and well spaced and human readable, without any too advanced features. I will start with DungeonFactoryTest. I want you to before all the parameterized tests traverse the rooms and get a list of rooms with all their exits, and then use a parameterized test to verify each room has each of the expected exits that are supposed to be created in the dungeon factory. I want a separate test method for the trap in the broken elevator. I want another parameterized test for the locks and keys. I also want you to make a parameterized test somewhere to verify that all of the rooms actually exist as they are defined. Make another parameterized test to test for rooms having items. Make another parameterized test to test for monster-room combinations, and when you do these parameterized tests, hopefully actually for example verify the actual metadata of the monsters rather than just one field of the monster's data. Verify that the player's fields are as defined in a separate test, including the current room. Make another test to verify that the game engine returned contains the correct things and was not made with the wrong objects.
+```
+
+### Assistant response and work performed
+
+Implemented the requested tests with JUnit. All tests passed, including 45 DungeonFactory test cases. The tests covered functionality such as room traversal, exits, traps, locks and keys, room existence, item validation, monster metadata, player state, and the game engine’s validity. No changes were made to production code.
+
+---
+
+## November 11, 2026 - MovementEngineTest
+
+### Exact student prompt
+
+```text
+Now do the same process, but for MovementEngine.
+```
+
+### Assistant response and work performed
+
+Developed and implemented a comprehensive set of tests for `MovementEngine` focusing on movement logic, traps, locked exits, and error handling. Mockito was used to isolate the interactions with traps and rooms.
+
+The test suite successfully verified the following scenarios:
+- Movement fails when a target room doesn't exist.
+- Actions are blocked when attempting to access a locked room.
+- Proper triggering of traps (armed/disarmed) upon entering a room.
+- Player’s current room is correctly updated after valid movement.
+- Results are consistent for different states of traps.
+
+All tests passed without modifying production code.
+
+---
+
+## November 11, 2026 - TrapResolverTest
+
+### Exact student prompt
+
+```text
+Now can you do the same for the TrapResolver in the rules folder
+```
+
+### Assistant response and work performed
+
+Created tests for `TrapResolver`, aiming to validate its handling of traps in various states. Different scenarios tested include null traps, unarmed traps, armed traps with one-time triggers, and traps that remain armed. Mock objects for the player and traps were used to isolate `TrapResolver`.
+
+The following details were thoroughly validated:
+- Resolution appropriately skips null or unarmed traps.
+- The player takes damage for armed traps, and one-time traps correctly disarm after activation.
+- Armed traps remaining active after resolution behave as expected across multiple calls.
+
+All tests passed successfully without affecting production logic.
