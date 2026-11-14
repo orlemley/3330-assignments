@@ -73,4 +73,9 @@ public class MainTest {
         assertEquals("Distinct Room" + newline + "Distinct movement." + newline
                 + "Distinct pickup." + newline, output.toString(StandardCharsets.UTF_8));
     }
+
+    @Test
+    void mainCanBeConstructed() {
+        assertNotNull(new Main());
+    }
 }
