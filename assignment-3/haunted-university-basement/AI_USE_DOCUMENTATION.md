@@ -318,3 +318,53 @@ Implemented a series of tests for `TrapResolver` to ensure its functionality whe
 ### Summary
 
 The updated test suite for `TrapResolver` ensures robust handling of all possible trap states. Mocking was used to focus exclusively on `TrapResolver` behavior without modifying production code. All tests passed as expected.
+
+## November 14, 2026 - QuestTest
+
+### Exact student prompt
+
+```text
+I need help improving test coverage for the `QuestTest` class. There are already some tests written, but I want to add more to cover edge cases and ensure everything works as expected.
+
+Specifically, I’d like to:
+1. Test that `updateStatus()` doesn’t change the `COMPLETED` state once a quest is finished.
+2. Check that `null` values for the quest name or description throw a `NullPointerException`.
+3. Verify that empty strings for names and descriptions are allowed and behave correctly.
+4. Ensure marking the same goal repeatedly doesn’t cause issues or inconsistencies.
+5. Add a parameterized test to check all possible goal status combinations and their effects on the quest’s state.
+
+Keep the tests simple, clear, and easy to understand. Also, document what we’ve done so I can include it in my project’s AI log.
+```
+
+### Assistant response and work performed
+
+The assistant recommended and implemented additional test methods for the `QuestTest` class, designed to enhance coverage and verify the robustness of the `Quest` class. These test cases included edge cases, validations for goal completion, and transitions of `QuestStatus` based on different combinations of goals being completed. The assistant used only simple, human-readable test methodologies suitable for the student's assignment requirements.
+
+### Implementation
+
+The following new test methods were added to `QuestTest`:
+
+1. **`updateStatusDoesNotChangeCompletedQuest`**:
+  - Once a quest is completed, calling `updateStatus()` does not alter its `COMPLETED` state. This ensures immutability of the `COMPLETED` state.
+
+2. **`nullQuestNameOrDescriptionThrowsNullPointerException`**:
+  - Ensures that providing `null` values for the quest's name and description throws a `NullPointerException`, preserving the integrity of the `Quest` class's constructor validation.
+
+3. **`emptyQuestNameAndDescription`**:
+  - Verifies that an empty quest name and description are valid and do not impact the quest's default behavior.
+
+4. **`repeatedMarkingOfGoalsDoesNotAffectState`**:
+  - Confirms that repeatedly marking the same goal (i.e., marking `GradebookRecovered` or `PhantomDefeated` multiple times) does not result in state inconsistencies or unexpected results. The quest's state remains accurate and predictable.
+
+5. **`parametrizedUpdateStatusCoversAllScenarios`**:
+  - Uses parameterized testing to comprehensively verify state transitions of the `Quest` object for all possible combinations of:
+    - Whether the gradebook is recovered.
+    - Whether the phantom is defeated.
+    - The resulting expected `QuestStatus` (e.g., `NOT_STARTED`, `IN_PROGRESS`, `COMPLETED`).
+
+### Summary
+
+- The tests complement the existing methods in `QuestTest` by covering corner cases, validating immutability of states, and verifying behavior with repeated or incomplete operations.
+- All test methods were written in JUnit 5.
+- Simple constructs and good programming practices were used to ensure the tests are accessible and easy to understand without advanced features.
+```

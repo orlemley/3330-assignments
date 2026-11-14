@@ -86,4 +86,75 @@ public class QuestTest {
         assertEquals("Escape", quest.getName());
         assertEquals("Recover and defeat.", quest.getDescription());
     }
+
+    @Test
+    void updateStatusDoesNotChangeCompletedQuest() {
+        Quest quest = new Quest("Escape", "Recover and defeat.");
+        quest.markGradebookRecovered();
+        quest.markPhantomDefeated();
+        assertEquals(QuestStatus.COMPLETED, quest.getStatus());
+        assertTrue(quest.isComplete());
+
+        // Call updateStatus and ensure state is unchanged
+        quest.updateStatus();
+        assertEquals(QuestStatus.COMPLETED, quest.getStatus());
+        assertTrue(quest.isComplete());
+    }
+
+    @Test
+    void nullQuestNameOrDescriptionThrowsNullPointerException() {
+        assertThrows(NullPointerException.class, () -> new Quest(null, "Description"));
+        assertThrows(NullPointerException.class, () -> new Quest("Name", null));
+    }
+
+    @Test
+    void emptyQuestNameAndDescription() {
+        Quest quest = new Quest("", "");
+        assertEquals("", quest.getName());
+        assertEquals("", quest.getDescription());
+        assertEquals(QuestStatus.NOT_STARTED, quest.getStatus());
+        assertFalse(quest.isGradebookRecovered());
+        assertFalse(quest.isPhantomDefeated());
+        assertFalse(quest.isComplete());
+    }
+
+    @Test
+    void repeatedMarkingOfGoalsDoesNotAffectState() {
+        Quest quest = new Quest("Escape", "Recover and defeat.");
+
+        // Mark goals multiple times
+        quest.markGradebookRecovered();
+        quest.markGradebookRecovered(); // Duplicate marking
+        quest.markPhantomDefeated();
+        quest.markPhantomDefeated(); // Duplicate marking
+
+        assertTrue(quest.isGradebookRecovered());
+        assertTrue(quest.isPhantomDefeated());
+        assertTrue(quest.isComplete());
+        assertEquals(QuestStatus.COMPLETED, quest.getStatus());
+    }
+
+    @ParameterizedTest
+    @CsvSource({
+            "false, false, NOT_STARTED",  // Both goals incomplete
+            "true, false, IN_PROGRESS",  // Only Gradebook recovered
+            "false, true, IN_PROGRESS",  // Only Phantom defeated
+            "true, true, COMPLETED"      // Both goals completed
+    })
+    void parametrizedUpdateStatusCoversAllScenarios(boolean gradebook, boolean phantom, QuestStatus expectedStatus) {
+        Quest quest = new Quest("Escape", "Recover and defeat.");
+
+        // Mark goals as per scenario
+        if (gradebook) {
+            quest.markGradebookRecovered();
+        }
+        if (phantom) {
+            quest.markPhantomDefeated();
+        }
+
+        assertEquals(expectedStatus, quest.getStatus());
+        assertEquals(gradebook, quest.isGradebookRecovered());
+        assertEquals(phantom, quest.isPhantomDefeated());
+        assertEquals(gradebook && phantom, quest.isComplete());
+    }
 }
