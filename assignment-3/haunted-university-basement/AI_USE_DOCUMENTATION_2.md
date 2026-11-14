@@ -341,3 +341,29 @@ Is this something that is a very common problem with pit, or do people literally
 Checked PIT's official basic-concepts and operator guidance and primary research on equivalent mutant detection. Explained that equivalent mutants are a well-established limitation of mutation testing generally, not a sign that ordinary unit tests should inspect bytecode. Avoided claiming a measured frequency for this project or universal industry practice. Recommended reviewing survivors for missing behavior assertions, documented observable diagnostics, or equivalence rather than treating every survivor as a defect. Distinguished the meaningful missing Main output assertions from the unused CombatEngine initializer and qualified the explicit-guard stack-trace tests as optional diagnostic requirements, not a general recommendation for routine application tests.
 
 Sources: https://pitest.org/quickstart/basic_concepts/ ; https://pitest.org/quickstart/mutators/ ; https://arxiv.org/abs/1303.2784 . No code or configuration changes were made.
+
+## November 14, 2026 - Measuring coverage with EclEmma
+
+### Exact student prompt
+
+```text
+What is the best way to actually get a percent coverage number with eclemma?
+```
+
+### Assistant response
+
+Explained how to run all project tests with Coverage As > JUnit Test in Eclipse, inspect the active Coverage session, select Lines and Branches counters, and read the aggregated production source-folder percentage rather than mixing tests or libraries into the denominator. Recommended keeping unexecuted code visible and identifying the metric reported for grading. Linked official launching, Coverage view, and export documentation. No coverage session was launched, no percentage was newly measured, and no code or configuration was changed.
+
+Sources: https://www.eclemma.org/userdoc/launching.html ; https://www.eclemma.org/userdoc/coverageview.html ; https://www.eclemma.org/userdoc/importexport.html .
+
+## November 14, 2026 - Investigating EclEmma 97.3 percent
+
+### Exact student prompt
+
+```text
+it says 97.3 percent coverage but I'm not sure why it's so low
+```
+
+### Assistant investigation
+
+Requested the selected counter mode, measured scope, and classes below 100 percent to identify the Eclipse result accurately. The local PIT ALL report uses a different measurement and reports 379/382 production lines, approximately 99.2 percent. Its uncovered source is in Main and DungeonFactory constructors, while its engine, event, model, and rules packages show complete line coverage. This does not establish the user's EclEmma metric or result. Explained that instruction, branch, and line percentages differ; test code, libraries, or an incomplete/stale test session can also change the measured scope. No tests, production code, or configuration were changed.
