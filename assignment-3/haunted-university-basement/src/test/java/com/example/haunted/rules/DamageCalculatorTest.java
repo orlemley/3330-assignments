@@ -84,6 +84,34 @@ class DamageCalculatorTest {
         assertEquals(20, damage); // (20 base attack + 10 enraged bonus) - 10 = 20
     }
 
+    @ParameterizedTest
+    @CsvSource({"9, 10, 1", "10, 10, 1", "11, 10, 1", "12, 10, 2", "0, 0, 1"})
+    void minimumDamageBoundariesApplyInBothDirections(int attack, int defense, int expected) {
+        Player attacker = createPlayerWithStats(attack, 2, null, null);
+        Monster defender = createMonster(defense);
+        Player playerDefender = createPlayerWithStats(7, defense, null, null);
+        Monster monsterAttacker = createMonsterWithAttack(attack);
+
+        assertEquals(expected, damageCalculator.calculatePlayerDamage(attacker, defender));
+        assertEquals(expected, damageCalculator.calculateMonsterDamage(monsterAttacker, playerDefender));
+        assertEquals(50, attacker.getHealth());
+        assertEquals(50, defender.getHealth());
+        assertEquals(50, playerDefender.getHealth());
+        assertEquals(50, monsterAttacker.getHealth());
+    }
+
+    @ParameterizedTest
+    @CsvSource({"0, 10", "24, 10", "25, 20", "26, 20"})
+    void bossDamageUsesCurrentAttackAboveAndAtEnrageBoundary(int damageTaken, int expected) {
+        BossMonster boss = new BossMonster("Boss", 50, 20, 3, Collections.emptyList(), 10);
+        Player player = createPlayerWithStats(7, 10, null, null);
+        boss.takeDamage(damageTaken);
+
+        assertEquals(expected, damageCalculator.calculateMonsterDamage(boss, player));
+        assertEquals(50 - damageTaken, boss.getHealth());
+        assertEquals(50, player.getHealth());
+    }
+
     // Helper Methods for Test Setup
 
     private Player createPlayerWithStats(int baseAttack, int baseDefense, Weapon weapon, Armor armor) {
