@@ -367,3 +367,33 @@ it says 97.3 percent coverage but I'm not sure why it's so low
 ### Assistant investigation
 
 Requested the selected counter mode, measured scope, and classes below 100 percent to identify the Eclipse result accurately. The local PIT ALL report uses a different measurement and reports 379/382 production lines, approximately 99.2 percent. Its uncovered source is in Main and DungeonFactory constructors, while its engine, event, model, and rules packages show complete line coverage. This does not establish the user's EclEmma metric or result. Explained that instruction, branch, and line percentages differ; test code, libraries, or an incomplete/stale test session can also change the measured scope. No tests, production code, or configuration were changed.
+
+## November 16, 2026 - Attempt to detect all remaining mutations
+
+### Exact student prompt
+
+```text
+Can you try to kill any remaining mutations, and tell me if any are impossible. Do it even if it's not a normal test, but document it
+```
+
+### Assistant response and initial work
+
+Reran the current project with PIT 1.30.1 ALL before modifying tests: 813 mutations generated, 810 killed, 3 survived; zero uncovered mutations. The ordinary source-line result was 390/392 covered lines. Counts differ from the November 14 report because the workspace has changed since that report; these new figures are measured, not extrapolated from the old run.
+
+Added ImplementationContractTest.java as a separate explicitly implementation-sensitive test class. No production source or POM changes were made.
+
+- Inventory test reflectively replaces the private final items field on a fresh Inventory with a mocked List. The mock reports size zero and returns false from add; the test requires Inventory.addItem to propagate that false result and verifies the call. This is an artificial internal configuration, not normal behavior of the ArrayList created by Inventory.
+- Combat test executes a real attack with mocked damage calculation, then uses Byte Buddy's agent to capture the loaded CombatEngine class during retransformation. An ASM visitor checks that the first store to the debug-named damageToPlayer local follows ICONST_0. This deliberately tests the current compiled initializer, not its effect on combat results.
+- TrapResolver test resolves a real trap, then captures the loaded class and checks that the Object array used for formatting is allocated with ICONST_2. This deliberately checks the two-argument representation, not just the unchanged formatted message.
+
+The helper installs a temporary ClassFileTransformer, captures bytes only for the exact loaded class, returns null (no bytecode replacement), and removes the transformer in finally. It reads loaded definitions rather than original .class resources. The tests use Byte Buddy and its shaded ASM already available transitively through Mockito. They do not query PIT mutation identifiers or disable any mutations.
+
+All three new tests passed in an ordinary Maven run. A full ordinary-suite and ALL mutation run was started to verify the actual effect under PIT. Final results and limitations are appended below.
+
+### Final verification and limitations
+
+The full `mvn -B test org.pitest:pitest-maven:mutationCoverage "-Dmutators=ALL" "-DoutputFormats=HTML,XML" "-DreportsDirectory=target/pit-reports-implementation"` run completed with BUILD SUCCESS. All 358 ordinary tests passed. PIT generated 813 mutations and killed all 813 (100%), with zero survivors and zero uncovered mutations. XML inspection confirms ImplementationContractTest is the killing test for the prior Inventory return-true, CombatEngine zero-to-one initializer, and TrapResolver two-to-three formatting-array mutations. Report: target/pit-reports-implementation/index.html. Log: target/pit-implementation.log.
+
+There are no remaining survivors in this measured configuration, so no mutation in this run remains impossible for the requested implementation-inspection approach. The earlier conclusion that these cannot be killed by ordinary behavioral tests remains true for the unchanged normal API; these new tests intentionally extend the observation boundary to private state and compiled instructions.
+
+Portability limitations: the reflection test writes a private final instance field and the current JDK emits a warning that future releases may block this without explicit enablement. Runtime inspection requires agent attachment and retransformation support, local-variable debug metadata, the existing compiler instruction layout, and Byte Buddy's transitive dependencies. The temporary transformer does not edit instructions, but retransformation is an invasive test mechanism and may interact with coverage agents. Harmless source/compiler changes can require test changes. No universal claim is made for other PIT versions, JVM restrictions, or external mutation plugins.

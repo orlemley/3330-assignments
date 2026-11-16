@@ -163,3 +163,15 @@ mvn test org.pitest:pitest-maven:mutationCoverage "-Dmutators=ALL" "-DoutputForm
 - [PIT Maven configuration](https://pitest.org/quickstart/maven/)
 - [ArrayList.add API contract](https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/util/ArrayList.html#add(E))
 - [Formatter API: extra formatting arguments are ignored](https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/util/Formatter.html)
+
+## November 16, 2026 - Implementation-sensitive tests added by explicit request
+
+The student requested attempts to detect remaining mutations even with nonstandard tests. Added [ImplementationContractTest.java](src/test/java/com/example/haunted/ImplementationContractTest.java) without production-code changes or exclusions.
+
+The Inventory test injects a mocked backing List through reflection and checks propagation of a false add return. That is an artificial state outside Inventory's normal ArrayList-backed API. It distinguishes the implementation's return-value delegation, not a previously overlooked ArrayList input case.
+
+The CombatEngine and TrapResolver tests use Byte Buddy's instrumentation agent with a temporary passive retransformation transformer to capture loaded class definitions. ASM visitors assert the zero initializer instruction for the debug-named damageToPlayer local and the two-element formatting Object array respectively. The methods are also executed normally so their tests participate in PIT coverage selection. These tests inspect actual loaded definitions, not .class resources on disk, and successfully observe PIT's mutated instructions. No PIT mutation IDs are queried and no mutants are bypassed.
+
+Measured before the additions: 810/813 killed in a current whole-project ALL run. Measured after: **813/813 killed (100%)**, zero survivors, zero uncovered mutations, and all **358 ordinary tests passing**. The changed mutation count versus November 14 reflects the current workspace and is not an inferred score. Latest report: [implementation-inspection ALL report](target/pit-reports-implementation/index.html). This supersedes earlier uncertainty about whether the approach could work locally; it does not redefine those changes as ordinary behavioral defects.
+
+The tests deliberately require implementation details. They rely on private-final-field reflection, agent attachment/retransformation, local-variable debug information, the current instruction layout, and Byte Buddy/shaded ASM from Mockito's dependencies. The JDK warns about future restrictions on final-field writes and dynamic agents. Different compiler settings, coverage agents, JVM restrictions, or harmless refactors may require adapting these tests. The result is verified for PIT 1.30.1 and this local environment, not guaranteed for all grading environments.
