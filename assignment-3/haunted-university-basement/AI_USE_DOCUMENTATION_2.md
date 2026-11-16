@@ -397,3 +397,27 @@ The full `mvn -B test org.pitest:pitest-maven:mutationCoverage "-Dmutators=ALL" 
 There are no remaining survivors in this measured configuration, so no mutation in this run remains impossible for the requested implementation-inspection approach. The earlier conclusion that these cannot be killed by ordinary behavioral tests remains true for the unchanged normal API; these new tests intentionally extend the observation boundary to private state and compiled instructions.
 
 Portability limitations: the reflection test writes a private final instance field and the current JDK emits a warning that future releases may block this without explicit enablement. Runtime inspection requires agent attachment and retransformation support, local-variable debug metadata, the existing compiler instruction layout, and Byte Buddy's transitive dependencies. The temporary transformer does not edit instructions, but retransformation is an invasive test mechanism and may interact with coverage agents. Harmless source/compiler changes can require test changes. No universal claim is made for other PIT versions, JVM restrictions, or external mutation plugins.
+
+## November 16, 2026 - Checking impact on QuestTest
+
+### Exact student prompt
+
+```text
+did any of what you did impact quest test?
+```
+
+### Assistant response and verification
+
+Inspected QuestTest and the new ImplementationContractTest. The recent mutation-killing additions did not edit QuestTest or production Quest. The instrumentation helper targets only CombatEngine and TrapResolver; reflection changes only a fresh Inventory instance. The combat inspection test creates its own separate Quest. The latest available Surefire report shows all eight QuestTest cases passed with zero failures, errors, or skips. No new test run or code changes were made for this check.
+
+## November 16, 2026 - Git conflict check
+
+### Exact student prompt
+
+```text
+can you check git right now to see if there was any conflict on the ai use documentation 2 file?
+```
+
+### Assistant response and verification
+
+Git reported no unmerged index entries for AI_USE_DOCUMENTATION_2.md. The file contained no merge-conflict markers, and git diff --check found no conflict or whitespace errors. At inspection time the file had 12 unstaged added lines and no deletions: the preceding QuestTest verification record. Git emitted only an LF-to-CRLF normalization warning, not a merge conflict. This check concerns current local Git state and does not prove there was never a resolved historical conflict. Appended this audit entry after the check; no existing contents were edited.
